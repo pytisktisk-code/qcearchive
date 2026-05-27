@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QCE Past Paper Archive — The Ultimate Open-Source QCAA Resource</title>
+  <meta name="description" content="2,192 QCAA past papers, marking guides, sample assessments and syllabuses across 77 subjects. Free forever. No signup. No paywall." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+            body: ['"DM Sans"', 'sans-serif'],
+            mono: ['"DM Mono"', 'monospace'],
+          },
+          colors: {
+            ink: {
+              950: '#080a0f',
+              900: '#0d0f17',
+              800: '#131620',
+              700: '#1a1e2e',
+              600: '#232840',
+            },
+            gold: {
+              300: '#fde99a',
+              400: '#f9d84a',
+              500: '#e8b84b',
+              600: '#c99528',
+            },
+            slate2: {
+              400: '#94a3c4',
+              300: '#b8c5df',
+              200: '#d6dfee',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #080a0f;
+      color: #d6dfee;
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: .35;
+    }
+
+    /* ── hero gradient mesh ── */
+    .hero-gradient {
+      background:
+        radial-gradient(ellipse 80% 60% at 60% -10%, rgba(232,184,75,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(100,120,200,0.08) 0%, transparent 60%),
+        linear-gradient(175deg, #0d0f17 0%, #080a0f 100%);
+    }
+
+    /* ── pulsing download button ── */
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(232,184,75,.55), 0 0 0 0 rgba(232,184,75,.25); }
+      70%  { box-shadow: 0 0 0 14px rgba(232,184,75,0), 0 0 0 28px rgba(232,184,75,0); }
+      100% { box-shadow: 0 0 0 0 rgba(232,184,75,0), 0 0 0 0 rgba(232,184,75,0); }
+    }
+    .btn-download {
+      animation: pulse-ring 2.4s ease-out infinite;
+      background: linear-gradient(135deg, #e8b84b 0%, #f9d84a 100%);
+      color: #080a0f;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: .02em;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .btn-download:hover {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.08);
+      animation: none;
+    }
+    .btn-download:active { transform: translateY(0) scale(0.99); }
+
+    /* ── stat card ── */
+    .stat-card {
+      background: linear-gradient(145deg, #131620, #0d0f17);
+      border: 1px solid rgba(232,184,75,.14);
+    }
+
+    /* ── section divider ── */
+    .divider {
+      background: linear-gradient(90deg, transparent, rgba(232,184,75,.3), transparent);
+      height: 1px;
+    }
+
+    /* ── accordion ── */
+    .acc-body { max-height: 0; overflow: hidden; transition: max-height .35s cubic-bezier(0.4,0,0.2,1); }
+    .acc-body.open { max-height: 900px; }
+    .acc-chevron { transition: transform .3s ease; }
+    .acc-chevron.open { transform: rotate(180deg); }
+
+    /* ── tab system ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-btn { transition: color .2s, border-color .2s, background .2s; }
+    .tab-btn.active {
+      color: #e8b84b;
+      border-bottom-color: #e8b84b;
+    }
+
+    /* ── category badge colors ── */
+    .badge-sciences    { background: rgba(99,200,160,.12); color: #63c8a0; border: 1px solid rgba(99,200,160,.25); }
+    .badge-hass        { background: rgba(140,110,240,.12); color: #b59af8; border: 1px solid rgba(140,110,240,.25); }
+    .badge-maths       { background: rgba(75,175,232,.12); color: #7ec8f5; border: 1px solid rgba(75,175,232,.25); }
+    .badge-english     { background: rgba(232,184,75,.12); color: #e8b84b; border: 1px solid rgba(232,184,75,.25); }
+    .badge-languages   { background: rgba(240,120,90,.12); color: #f08870; border: 1px solid rgba(240,120,90,.25); }
+    .badge-tech        { background: rgba(60,200,220,.12); color: #56d8e8; border: 1px solid rgba(60,200,220,.25); }
+    .badge-arts        { background: rgba(230,90,150,.12); color: #ee7bac; border: 1px solid rgba(230,90,150,.25); }
+    .badge-hpe         { background: rgba(180,220,60,.12); color: #b4dc3c; border: 1px solid rgba(180,220,60,.25); }
+
+    /* ── scroll fade-in ── */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── step connector line ── */
+    .step-line::after {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(100% + 1px);
+      width: calc(100% - 2px);
+      height: 1px;
+      background: linear-gradient(90deg, rgba(232,184,75,.4), rgba(232,184,75,.1));
+    }
+
+    /* ── scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d0f17; }
+    ::-webkit-scrollbar-thumb { background: #2a2f45; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #e8b84b; }
+
+    /* ── back-to-top ── */
+    #back-to-top {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 50;
+      width: 44px; height: 44px;
+      background: rgba(232,184,75,.9);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      box-shadow: 0 4px 20px rgba(232,184,75,.35);
+    }
+    #back-to-top.show { opacity: 1; pointer-events: all; }
+    #back-to-top:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════ -->
+<nav class="relative z-10 flex items-center justify-between px-6 md:px-12 py-5 border-b border-white/5">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-md flex items-center justify-center" style="background:linear-gradient(135deg,#e8b84b,#f9d84a);">
+      <svg class="w-4 h-4 text-ink-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.966 8.966 0 00-6 2.292m0-14.25v14.25"/>
+      </svg>
+    </div>
+    <span class="font-display font-bold text-white text-lg tracking-tight">QCE Archive</span>
+  </div>
+  <div class="hidden md:flex items-center gap-8 font-body text-sm text-slate2-400">
+    <a href="#whats-inside" class="hover:text-gold-400 transition-colors">What's Inside</a>
+    <a href="#how-to-use" class="hover:text-gold-400 transition-colors">How to Use</a>
+    <a href="#open-source" class="hover:text-gold-400 transition-colors">Open Source</a>
+  </div>
+  <a href="qcaa_past_papers_master.xlsx" download="qcaa_past_papers_master.xlsx"
+     class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold btn-download">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+    </svg>
+    Download Free
+  </a>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<header class="hero-gradient relative z-10 pt-20 pb-24 md:pt-28 md:pb-32 px-6 md:px-12 overflow-hidden">
+
+  <!-- decorative grid lines -->
+  <div class="pointer-events-none absolute inset-0" style="background-image: linear-gradient(rgba(232,184,75,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,.04) 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+  <div class="relative max-w-5xl mx-auto">
+    <!-- eyebrow -->
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold-500/25 bg-gold-500/8 mb-7">
+      <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-pulse"></span>
+      <span class="font-mono text-xs text-gold-400 tracking-widest uppercase">Queensland Senior Education · QCE</span>
+    </div>
+
+    <h1 class="font-display font-black text-white leading-[1.05] mb-6"
+        style="font-size:clamp(2.6rem,6.5vw,5.2rem); letter-spacing:-.02em;">
+      The Ultimate<br/>
+      <span style="background:linear-gradient(135deg,#e8b84b,#f9d84a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Open-Source</span><br/>
+      QCAA Past Paper Archive.
+    </h1>
+
+    <p class="font-body text-slate2-300 text-lg md:text-xl max-w-2xl leading-relaxed mb-10">
+      No sign-ups. No paywalls. No paywalls. Just pure education — <strong class="text-white font-semibold">2,192 official QCAA documents</strong> across 77 subjects, neatly indexed in a single Excel file with direct download links. Completely free, forever.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+      <a href="qcaa_past_papers_master.xlsx" download="qcaa_past_papers_master.xlsx"
+         class="btn-download inline-flex items-center gap-3 px-8 py-4 rounded-xl text-base font-semibold text-ink-950 shadow-2xl">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+        </svg>
+        Download Master Spreadsheet
+        <span class="font-mono text-xs bg-black/20 px-2 py-0.5 rounded">Free · .xlsx</span>
+      </a>
+      <a href="#whats-inside" class="group inline-flex items-center gap-2 text-slate2-400 hover:text-gold-400 transition-colors text-sm font-medium">
+        <span>See what's inside</span>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- inline social proof row -->
+    <div class="flex flex-wrap gap-x-6 gap-y-2 mt-10 text-sm text-slate2-400 font-body">
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+        No account required
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+        Direct PDF links included
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+        Open-source on GitHub
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+        Updated through 2026
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════ -->
+<section class="relative z-10 py-10 px-6 md:px-12 border-y border-white/5 bg-ink-800/40">
+  <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-5">
+
+    <div class="stat-card rounded-2xl p-6 text-center fade-in">
+      <p class="font-display font-black text-4xl md:text-5xl text-gold-400">2,192</p>
+      <p class="font-body text-slate2-400 text-sm mt-1.5 leading-snug">Official QCAA<br/>Documents</p>
+    </div>
+    <div class="stat-card rounded-2xl p-6 text-center fade-in" style="transition-delay:.08s">
+      <p class="font-display font-black text-4xl md:text-5xl text-gold-400">77</p>
+      <p class="font-body text-slate2-400 text-sm mt-1.5 leading-snug">Unique Subjects<br/>Covered</p>
+    </div>
+    <div class="stat-card rounded-2xl p-6 text-center fade-in" style="transition-delay:.16s">
+      <p class="font-display font-black text-4xl md:text-5xl text-gold-400">8</p>
+      <p class="font-body text-slate2-400 text-sm mt-1.5 leading-snug">Subject<br/>Categories</p>
+    </div>
+    <div class="stat-card rounded-2xl p-6 text-center fade-in" style="transition-delay:.24s">
+      <p class="font-display font-black text-4xl md:text-5xl text-gold-400">2018–26</p>
+      <p class="font-body text-slate2-400 text-sm mt-1.5 leading-snug">Years of<br/>Material</p>
+    </div>
+
+  </div>
+
+  <!-- doc type mini-grid -->
+  <div class="max-w-6xl mx-auto mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 fade-in">
+    <div class="rounded-xl px-4 py-3 border border-white/7 bg-white/3 text-center">
+      <p class="font-mono font-semibold text-white text-xl">457</p>
+      <p class="text-slate2-400 text-xs mt-0.5">Sample Assessment<br/>Instruments</p>
+    </div>
+    <div class="rounded-xl px-4 py-3 border border-white/7 bg-white/3 text-center">
+      <p class="font-mono font-semibold text-white text-xl">342</p>
+      <p class="text-slate2-400 text-xs mt-0.5">Marking<br/>Guides</p>
+    </div>
+    <div class="rounded-xl px-4 py-3 border border-white/7 bg-white/3 text-center">
+      <p class="font-mono font-semibold text-white text-xl">336</p>
+      <p class="text-slate2-400 text-xs mt-0.5">Exam Papers &amp;<br/>Response Books</p>
+    </div>
+    <div class="rounded-xl px-4 py-3 border border-white/7 bg-white/3 text-center">
+      <p class="font-mono font-semibold text-white text-xl">301</p>
+      <p class="text-slate2-400 text-xs mt-0.5">Subject<br/>Reports</p>
+    </div>
+    <div class="rounded-xl px-4 py-3 border border-white/7 bg-white/3 text-center">
+      <p class="font-mono font-semibold text-white text-xl">242</p>
+      <p class="text-slate2-400 text-xs mt-0.5">Stimulus<br/>Books</p>
+    </div>
+    <div class="rounded-xl px-4 py-3 border border-white/7 bg-white/3 text-center">
+      <p class="font-mono font-semibold text-white text-xl">220</p>
+      <p class="text-slate2-400 text-xs mt-0.5">Sample Student<br/>Responses</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     WHAT'S INSIDE — TAB OVERVIEW
+═══════════════════════════════════════════ -->
+<section id="whats-inside" class="relative z-10 py-20 px-6 md:px-12">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="mb-14 fade-in">
+      <span class="font-mono text-xs text-gold-500 tracking-widest uppercase">Complete Breakdown</span>
+      <h2 class="font-display font-black text-white text-4xl md:text-5xl mt-3 mb-4" style="letter-spacing:-.02em;">What's Inside the Archive</h2>
+      <p class="font-body text-slate2-300 text-base md:text-lg max-w-2xl leading-relaxed">
+        Every entry contains the subject name, year, document type, full title, and a direct URL to the official QCAA PDF. Browse by category below or filter in Excel with a single click.
+      </p>
+    </div>
+
+    <!-- CATEGORY OVERVIEW CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
+
+      <!-- Sciences -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in">
+        <div class="flex items-center justify-between">
+          <span class="badge-sciences text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Sciences</span>
+          <span class="font-mono text-slate2-400 text-xs">10 subjects · 336 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Agricultural Practices &amp; Science</li>
+          <li>Aquatic &amp; Marine Science</li>
+          <li>Biology, Chemistry, Physics</li>
+          <li>Earth &amp; Environmental Science</li>
+          <li>Psychology, Science in Practice</li>
+        </ul>
+      </div>
+
+      <!-- Humanities & HASS -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.05s">
+        <div class="flex items-center justify-between">
+          <span class="badge-hass text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Humanities &amp; HASS</span>
+          <span class="font-mono text-slate2-400 text-xs">15 subjects · 372 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Aboriginal &amp; TSI Studies</li>
+          <li>Ancient &amp; Modern History</li>
+          <li>Economics, Legal Studies</li>
+          <li>Geography, Philosophy &amp; Reason</li>
+          <li>Business, Accounting, Tourism…</li>
+        </ul>
+      </div>
+
+      <!-- Mathematics -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.10s">
+        <div class="flex items-center justify-between">
+          <span class="badge-maths text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Mathematics</span>
+          <span class="font-mono text-slate2-400 text-xs">5 subjects · 220 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Specialist Mathematics</li>
+          <li>Mathematical Methods</li>
+          <li>General Mathematics</li>
+          <li>Essential Mathematics</li>
+          <li>Numeracy</li>
+        </ul>
+      </div>
+
+      <!-- English -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.15s">
+        <div class="flex items-center justify-between">
+          <span class="badge-english text-xs font-semibold px-2.5 py-1 rounded-full font-mono">English</span>
+          <span class="font-mono text-slate2-400 text-xs">6 subjects · 245 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>English</li>
+          <li>English as an Additional Language</li>
+          <li>English &amp; Literature Extension</li>
+          <li>Literature</li>
+          <li>Essential English, Literacy</li>
+        </ul>
+      </div>
+
+      <!-- Languages -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.20s">
+        <div class="flex items-center justify-between">
+          <span class="badge-languages text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Languages</span>
+          <span class="font-mono text-slate2-400 text-xs">10 subjects · 366 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Aboriginal &amp; TSI Languages</li>
+          <li>Chinese &amp; Chinese Extension</li>
+          <li>French &amp; French Extension</li>
+          <li>German, Italian, Japanese</li>
+          <li>Spanish, German Extension</li>
+        </ul>
+      </div>
+
+      <!-- Technologies -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.25s">
+        <div class="flex items-center justify-between">
+          <span class="badge-tech text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Technologies</span>
+          <span class="font-mono text-slate2-400 text-xs">13 subjects · 228 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Aerospace Systems, Engineering</li>
+          <li>Digital Solutions, Design</li>
+          <li>Food &amp; Nutrition, Fashion</li>
+          <li>Building &amp; Construction Skills</li>
+          <li>ICT, Industrial Graphics…</li>
+        </ul>
+      </div>
+
+      <!-- The Arts -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.30s">
+        <div class="flex items-center justify-between">
+          <span class="badge-arts text-xs font-semibold px-2.5 py-1 rounded-full font-mono">The Arts</span>
+          <span class="font-mono text-slate2-400 text-xs">14 subjects · 326 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Dance &amp; Dance in Practice</li>
+          <li>Drama &amp; Drama in Practice</li>
+          <li>Film, Television &amp; New Media</li>
+          <li>Music (+ 3 Extensions)</li>
+          <li>Visual Art, Visual Arts in Practice</li>
+        </ul>
+      </div>
+
+      <!-- Health & PE -->
+      <div class="stat-card rounded-2xl p-5 flex flex-col gap-3 fade-in" style="transition-delay:.35s">
+        <div class="flex items-center justify-between">
+          <span class="badge-hpe text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Health &amp; PE</span>
+          <span class="font-mono text-slate2-400 text-xs">4 subjects · 99 docs</span>
+        </div>
+        <ul class="text-slate2-300 text-sm leading-relaxed space-y-0.5">
+          <li>Physical Education</li>
+          <li>Health</li>
+          <li>Sport &amp; Recreation</li>
+          <li>Early Childhood Studies</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- ── ACCORDION: full subject list ── -->
+    <div class="fade-in">
+      <h3 class="font-display font-bold text-white text-2xl mb-6" style="letter-spacing:-.01em;">Full Subject Index — Every Entry Included</h3>
+
+      <!-- Sciences -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-sciences text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Sciences</span>
+            <span class="font-body font-medium text-white">10 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Agricultural Practices</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Agricultural Science</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Aquatic Practices</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Biology</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Chemistry</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Earth &amp; Environmental Science</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, stimulus books</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Marine Science</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Physics</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite, formula sheets</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Psychology</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, student responses</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Science in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Humanities & HASS -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-hass text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Humanities &amp; HASS</span>
+            <span class="font-body font-medium text-white">15 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Aboriginal &amp; Torres Strait Islander Studies</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Accounting</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, stimulus books</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Ancient History</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Business</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Business Studies</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Career Education</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Short Course · Sample assessments, syllabi</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Economics</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Geography</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Legal Studies</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Modern History</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Philosophy &amp; Reason</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Religion &amp; Ethics</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Social &amp; Community Studies</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Study of Religion</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Tourism</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mathematics -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-maths text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Mathematics</span>
+            <span class="font-body font-medium text-white">5 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Specialist Mathematics</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, formula sheets, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Mathematical Methods</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">General Mathematics</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · CIA phases, formula books</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Essential Mathematics</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · CIA phases, formula books</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Numeracy</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Short Course · Sample assessments, syllabi</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- English -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-english text-xs font-semibold px-2.5 py-1 rounded-full font-mono">English</span>
+            <span class="font-body font-medium text-white">6 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">English</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Question books, marking guides, text lists</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">English as an Additional Language</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, prescribed text lists</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">English &amp; Literature Extension</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Literature</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Essential English</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · CIA phases, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Literacy</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Short Course · Sample assessments, syllabi</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-languages text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Languages</span>
+            <span class="font-body font-medium text-white">10 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Aboriginal &amp; Torres Strait Islander Languages</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Short Course · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Chinese</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, audio stimulus, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Chinese Extension</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">French</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite, audio stimulus</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">French Extension</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">German</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, audio stimulus</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">German Extension</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Italian</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Japanese</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite, audio stimulus</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Spanish</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, audio stimulus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technologies -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-tech text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Technologies</span>
+            <span class="font-body font-medium text-white">13 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Aerospace Systems</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, formula sheets, stimulus books</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Building &amp; Construction Skills</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Design</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Digital Solutions</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Full exam suite 2019–2025</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Engineering</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, formula sheets, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Engineering Skills</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Fashion</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Food &amp; Nutrition</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Furnishing Skills</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Hospitality Practices</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Industrial Graphics Skills</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Industrial Technology Skills</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Information &amp; Communication Technology</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Arts -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-arts text-xs font-semibold px-2.5 py-1 rounded-full font-mono">The Arts</span>
+            <span class="font-body font-medium text-white">14 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Arts in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Dance</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Dance in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Drama</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Drama in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Film, Television &amp; New Media</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Media Arts in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Music</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Music Extension (Composition)</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Music Extension (Musicology)</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Music Extension (Performance)</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Extension Subject · Sample assessments, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Music in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Visual Art</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, stimulus books, marking guides</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Visual Arts in Practice</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Health & PE -->
+      <div class="mb-3 rounded-2xl border border-white/7 overflow-hidden">
+        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/3 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="badge-hpe text-xs font-semibold px-2.5 py-1 rounded-full font-mono">Health &amp; PE</span>
+            <span class="font-body font-medium text-white">4 Subjects</span>
+          </div>
+          <svg class="acc-chevron w-5 h-5 text-slate2-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div class="acc-body">
+          <div class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-white/5 pt-5">
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Physical Education</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, subject reports</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Health</p>
+              <p class="text-slate2-400 text-xs mt-0.5">General Subject · Exams, marking guides, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Sport &amp; Recreation</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+            <div class="rounded-xl bg-white/3 border border-white/5 px-4 py-3">
+              <p class="font-body font-semibold text-white text-sm">Early Childhood Studies</p>
+              <p class="text-slate2-400 text-xs mt-0.5">Applied Subject · Syllabi, sample assessments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end accordion container -->
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     HOW TO USE
+═══════════════════════════════════════════ -->
+<section id="how-to-use" class="relative z-10 py-20 px-6 md:px-12" style="background:linear-gradient(180deg,#0d0f17 0%,#080a0f 100%);">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-14 text-center fade-in">
+      <span class="font-mono text-xs text-gold-500 tracking-widest uppercase">Getting Started</span>
+      <h2 class="font-display font-black text-white text-4xl md:text-5xl mt-3" style="letter-spacing:-.02em;">Up &amp; running in 3 steps</h2>
+      <p class="font-body text-slate2-400 mt-4 text-base md:text-lg max-w-xl mx-auto">No accounts. No apps. Just Excel or Google Sheets.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+
+      <!-- Step 1 -->
+      <div class="relative fade-in">
+        <div class="stat-card rounded-2xl p-7 flex flex-col h-full">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style="background:linear-gradient(135deg,#e8b84b20,#e8b84b10); border:1px solid rgba(232,184,75,.2);">
+            <span class="font-display font-black text-gold-400 text-xl">01</span>
+          </div>
+          <h3 class="font-display font-bold text-white text-xl mb-3">Download the Master Sheet</h3>
+          <p class="font-body text-slate2-400 text-sm leading-relaxed flex-1">
+            Click the download button above or below. You'll get a single <span class="font-mono text-gold-400 bg-gold-400/10 px-1 py-0.5 rounded text-xs">.xlsx</span> file containing all 2,192 entries across 10 organised sheets — one for each subject category plus a master <em>"All Past Papers"</em> sheet and a summary.
+          </p>
+          <div class="mt-5 pt-5 border-t border-white/5">
+            <p class="font-mono text-xs text-slate2-400">Works with: Excel · Google Sheets · LibreOffice · Numbers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="relative fade-in" style="transition-delay:.10s">
+        <div class="stat-card rounded-2xl p-7 flex flex-col h-full">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style="background:linear-gradient(135deg,#e8b84b20,#e8b84b10); border:1px solid rgba(232,184,75,.2);">
+            <span class="font-display font-black text-gold-400 text-xl">02</span>
+          </div>
+          <h3 class="font-display font-bold text-white text-xl mb-3">Filter by Subject, Year &amp; Type</h3>
+          <p class="font-body text-slate2-400 text-sm leading-relaxed flex-1">
+            Use Excel's built-in <strong class="text-slate2-300">AutoFilter</strong> on the <em>Subject</em>, <em>Year</em>, or <em>Document Type</em> columns. Instantly narrow 2,192 rows to exactly what you need — for example, all Biology marking guides from 2022–2025, or every Specialist Maths exam paper ever released.
+          </p>
+          <div class="mt-5 pt-5 border-t border-white/5">
+            <p class="font-mono text-xs text-slate2-400">Tip: Use Ctrl+Shift+L to toggle AutoFilter on any sheet</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="relative fade-in" style="transition-delay:.20s">
+        <div class="stat-card rounded-2xl p-7 flex flex-col h-full">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style="background:linear-gradient(135deg,#e8b84b20,#e8b84b10); border:1px solid rgba(232,184,75,.2);">
+            <span class="font-display font-black text-gold-400 text-xl">03</span>
+          </div>
+          <h3 class="font-display font-bold text-white text-xl mb-3">Click Any Link to Open the PDF</h3>
+          <p class="font-body text-slate2-400 text-sm leading-relaxed flex-1">
+            Every row contains a live <strong class="text-slate2-300">direct URL</strong> pointing straight to the official QCAA PDF. Click it to open the document in your browser — no login, no redirect. Works for exam papers, marking guides, stimulus books, syllabuses, and more.
+          </p>
+          <div class="mt-5 pt-5 border-t border-white/5">
+            <p class="font-mono text-xs text-slate2-400">Links sourced directly from qcaa.qld.edu.au</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- big CTA repeat -->
+    <div class="mt-14 text-center fade-in">
+      <a href="qcaa_past_papers_master.xlsx" download="qcaa_past_papers_master.xlsx"
+         class="btn-download inline-flex items-center gap-3 px-8 py-4 rounded-xl text-base font-semibold text-ink-950 shadow-2xl">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+        </svg>
+        Download Free — qcaa_past_papers_master.xlsx
+      </a>
+      <p class="font-body text-slate2-400 text-sm mt-3">2,192 rows · 10 sheets · 77 subjects · Direct QCAA links</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     WHAT THE SPREADSHEET CONTAINS
+═══════════════════════════════════════════ -->
+<section class="relative z-10 py-20 px-6 md:px-12 border-t border-white/5">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-12 fade-in">
+      <span class="font-mono text-xs text-gold-500 tracking-widest uppercase">Spreadsheet Structure</span>
+      <h2 class="font-display font-black text-white text-4xl md:text-5xl mt-3 mb-4" style="letter-spacing:-.02em;">Inside Every Row</h2>
+      <p class="font-body text-slate2-300 text-base md:text-lg max-w-2xl leading-relaxed">
+        Each of the 2,192 entries contains exactly six fields, designed to be instantly filterable and sortable in any spreadsheet application.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+      <div class="rounded-2xl border border-white/7 p-6 bg-white/2 fade-in">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center">
+            <span class="font-mono text-gold-400 text-xs font-bold">A</span>
+          </div>
+          <span class="font-mono text-white font-semibold text-sm">Subject</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">The full official name of the QCE subject (e.g. <em>Mathematical Methods</em>, <em>Biology</em>, <em>Film, Television &amp; New Media</em>).</p>
+      </div>
+      <div class="rounded-2xl border border-white/7 p-6 bg-white/2 fade-in" style="transition-delay:.05s">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center">
+            <span class="font-mono text-gold-400 text-xs font-bold">B</span>
+          </div>
+          <span class="font-mono text-white font-semibold text-sm">Category</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">The broad subject area — one of 8 categories: Sciences, Humanities &amp; HASS, Mathematics, English, Languages, Technologies, The Arts, or Health &amp; PE.</p>
+      </div>
+      <div class="rounded-2xl border border-white/7 p-6 bg-white/2 fade-in" style="transition-delay:.10s">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center">
+            <span class="font-mono text-gold-400 text-xs font-bold">C</span>
+          </div>
+          <span class="font-mono text-white font-semibold text-sm">Year</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">The academic year of publication. Range covers 2018 through 2026, with the majority of exam material from 2019 onward (post-QCAA reform).</p>
+      </div>
+      <div class="rounded-2xl border border-white/7 p-6 bg-white/2 fade-in" style="transition-delay:.15s">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center">
+            <span class="font-mono text-gold-400 text-xs font-bold">D</span>
+          </div>
+          <span class="font-mono text-white font-semibold text-sm">Document Type</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">One of 11 types: Exam Paper, Exam Paper (Multiple Choice), Marking Guide, Sample Assessment Instrument, Subject Report, Stimulus Book, Sample Student Response, Syllabus, Formula Book, Memo, or Other Resource.</p>
+      </div>
+      <div class="rounded-2xl border border-white/7 p-6 bg-white/2 fade-in" style="transition-delay:.20s">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center">
+            <span class="font-mono text-gold-400 text-xs font-bold">E</span>
+          </div>
+          <span class="font-mono text-white font-semibold text-sm">Document Title</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">The full descriptive name of the document as it appears on the QCAA website (e.g. <em>Paper 1 — Multiple choice question book</em>).</p>
+      </div>
+      <div class="rounded-2xl border border-white/7 p-6 bg-white/2 fade-in" style="transition-delay:.25s">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center">
+            <span class="font-mono text-gold-400 text-xs font-bold">F</span>
+          </div>
+          <span class="font-mono text-white font-semibold text-sm">URL</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">A live, direct hyperlink to the official QCAA PDF or resource. Clicking takes you straight to the file — no intermediate pages or login screens.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     OPEN SOURCE
+═══════════════════════════════════════════ -->
+<section id="open-source" class="relative z-10 py-20 px-6 md:px-12"
+  style="background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(232,184,75,.07) 0%, transparent 60%), #080a0f;">
+  <div class="max-w-5xl mx-auto text-center">
+
+    <div class="fade-in mb-4">
+      <!-- GitHub mark SVG -->
+      <svg class="w-12 h-12 text-white/70 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+    </div>
+
+    <div class="fade-in">
+      <span class="font-mono text-xs text-gold-500 tracking-widest uppercase">Open Source &amp; Community</span>
+      <h2 class="font-display font-black text-white text-4xl md:text-5xl mt-3 mb-6" style="letter-spacing:-.02em;">
+        Built in public.<br/>Free forever.
+      </h2>
+      <p class="font-body text-slate2-300 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+        This entire project — the archive data, this website, and all tooling — is hosted openly on GitHub Pages. There is no business model, no premium tier, and no plans to monetise. Every Queensland student deserves equal access to past exam materials.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-12 fade-in">
+      <div class="stat-card rounded-2xl p-6 text-left">
+        <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-white text-base mb-2">Permanently Free</h3>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">Hosted on GitHub Pages — zero hosting costs passed to users. The repository is public and can be forked, mirrored, or re-hosted by anyone.</p>
+      </div>
+      <div class="stat-card rounded-2xl p-6 text-left" style="">
+        <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-white text-base mb-2">Open Data</h3>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">The master spreadsheet is the canonical data source. Developers can build study tools, flashcard apps, or revision schedulers on top of this data without restriction.</p>
+      </div>
+      <div class="stat-card rounded-2xl p-6 text-left">
+        <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-white text-base mb-2">Community Contributions</h3>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">Spotted a missing paper or a broken link? Pull requests welcome. The more contributors, the more complete and reliable this resource becomes for every QCE student in Queensland.</p>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <a href="https://github.com" target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl border border-white/15 bg-white/5 text-white font-semibold text-sm hover:border-gold-500/40 hover:bg-white/8 transition-all">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+        View on GitHub
+        <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FINAL CTA BANNER
+═══════════════════════════════════════════ -->
+<section class="relative z-10 py-20 px-6 md:px-12 border-t border-white/5">
+  <div class="max-w-5xl mx-auto">
+    <div class="rounded-3xl overflow-hidden relative"
+         style="background:linear-gradient(135deg,#131620 0%,#1a1e2e 100%); border:1px solid rgba(232,184,75,.15);">
+      <!-- decorative radial -->
+      <div class="pointer-events-none absolute inset-0"
+           style="background:radial-gradient(ellipse 60% 80% at 80% 50%, rgba(232,184,75,.08) 0%, transparent 60%);"></div>
+      <div class="relative px-8 md:px-14 py-14 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        <div class="flex-1">
+          <h2 class="font-display font-black text-white text-3xl md:text-4xl mb-3" style="letter-spacing:-.02em;">
+            Stop searching.<br/>Start studying.
+          </h2>
+          <p class="font-body text-slate2-300 text-base leading-relaxed max-w-md">
+            2,192 official QCAA documents. 77 subjects. Every past paper, marking guide, and sample assessment from 2018 to 2026, indexed and linked. In one free file.
+          </p>
+        </div>
+        <div class="shrink-0 flex flex-col items-center gap-3">
+          <a href="qcaa_past_papers_master.xlsx" download="qcaa_past_papers_master.xlsx"
+             class="btn-download inline-flex items-center gap-3 px-8 py-4 rounded-xl text-base font-semibold text-ink-950 shadow-2xl whitespace-nowrap">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+            </svg>
+            Free Download
+          </a>
+          <span class="font-mono text-xs text-slate2-400">No account · No paywall · Always free</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="relative z-10 border-t border-white/5 pt-12 pb-10 px-6 md:px-12">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="flex flex-col md:flex-row justify-between gap-10 mb-10">
+      <div class="max-w-sm">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-md flex items-center justify-center" style="background:linear-gradient(135deg,#e8b84b,#f9d84a);">
+            <svg class="w-4 h-4 text-ink-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.966 8.966 0 00-6 2.292m0-14.25v14.25"/>
+            </svg>
+          </div>
+          <span class="font-display font-bold text-white text-lg">QCE Archive</span>
+        </div>
+        <p class="font-body text-slate2-400 text-sm leading-relaxed">
+          The ultimate open-source QCAA past paper archive. Free forever. No sign-ups. No paywalls.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 text-sm">
+        <div>
+          <p class="font-mono text-gold-500 text-xs uppercase tracking-widest mb-3">Archive</p>
+          <ul class="space-y-2 text-slate2-400">
+            <li><a href="#whats-inside" class="hover:text-white transition-colors">What's Inside</a></li>
+            <li><a href="#how-to-use" class="hover:text-white transition-colors">How to Use</a></li>
+            <li><a href="qcaa_past_papers_master.xlsx" download class="hover:text-white transition-colors">Download .xlsx</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-mono text-gold-500 text-xs uppercase tracking-widest mb-3">Categories</p>
+          <ul class="space-y-2 text-slate2-400">
+            <li>Sciences</li>
+            <li>Mathematics</li>
+            <li>Humanities &amp; HASS</li>
+            <li>English</li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-mono text-gold-500 text-xs uppercase tracking-widest mb-3">More</p>
+          <ul class="space-y-2 text-slate2-400">
+            <li>Languages</li>
+            <li>Technologies</li>
+            <li>The Arts</li>
+            <li>Health &amp; PE</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider mb-8"></div>
+
+    <div class="flex flex-col md:flex-row gap-5 items-start md:items-center justify-between">
+      <p class="font-body text-slate2-400 text-xs leading-relaxed max-w-2xl">
+        <strong class="text-slate2-300">Disclaimer:</strong> This archive is an independent, open-source educational resource. All exam materials, syllabi, and related intellectual property belong strictly to the
+        <strong class="text-slate2-300">Queensland Curriculum and Assessment Authority (QCAA)</strong>.
+        This platform is not endorsed by or affiliated with QCAA. All linked documents are hosted on official QCAA servers at qcaa.qld.edu.au.
+      </p>
+      <p class="font-mono text-slate2-400 text-xs whitespace-nowrap">
+        © 2025 QCE Archive · MIT Licence
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+
+<!-- back to top button -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <svg class="w-5 h-5 text-ink-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>
+  </svg>
+</button>
+
+
+<script>
+  // ── Accordion ──
+  function toggleAcc(btn) {
+    const body = btn.nextElementSibling;
+    const chevron = btn.querySelector('.acc-chevron');
+    const isOpen = body.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.acc-body.open').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.acc-chevron.open').forEach(c => c.classList.remove('open'));
+
+    // Open clicked (unless it was already open)
+    if (!isOpen) {
+      body.classList.add('open');
+      chevron.classList.add('open');
+    }
+  }
+
+  // ── Scroll fade-in ──
+  const faders = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  faders.forEach(el => observer.observe(el));
+
+  // ── Back to top ──
+  const btt = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btt.classList.toggle('show', window.scrollY > 500);
+  }, { passive: true });
+
+  // ── Smooth nav links ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
